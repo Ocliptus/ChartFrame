@@ -77,4 +77,8 @@ public class DataService {
             return false;
         }
     }
+
+    public void deleteAll() {
+        repository.deleteAll();
+    }
 }

@@ -1,6 +1,6 @@
 <!doctype html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<!--<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">-->
+<!--<html lang="en" xmlns="http://www.w3.org/1999/xhtml">-->
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -10,6 +10,98 @@
 </head>
 <body>
 
-<script src="chart.js"></script>
+<script th:inline="javascript">
+    /* Please don't touch this */
+    /*<![CDATA[*/
+    var data = /*[[${dataList}]]*/ [];
+    /*]]>*/
+
+    document.body.style.position = 'relative';
+
+    var container = document.createElement('div');
+    document.body.appendChild(container);
+
+    var width = 1000;
+    var height = 500;
+
+    var chart = window.tvchart = LightweightCharts.createChart(container, {
+        width: width,
+        height: height,
+        layout: {
+            backgroundColor: '#0a0a0a',
+            textColor: '#696969',
+            fontSize: 12,
+            fontFamily: 'Calibri',
+        },
+        priceScale: {
+            scaleMargins: {
+                top: 0.35,
+                bottom: 0.2,
+            },
+            borderVisible: false,
+        },
+        timeScale: {
+            borderVisible: false,
+        },
+        grid: {
+            horzLines: {
+                color: '#999999',
+                visible: false,
+            },
+            vertLines: {
+                color: '#999999',
+                visible: false,
+            },
+        },
+        crosshair: {
+            horzLine: {
+                visible: false,
+                labelVisible: false
+            },
+            vertLine: {
+                visible: true,
+                style: 0,
+                width: 2,
+                color: 'rgba(163, 163, 163, 0.3)',
+                labelVisible: false,
+            }
+        },
+    });
+
+    var series = chart.addAreaSeries({
+        topColor: 'rgba(20, 20, 20, 1)',
+        bottomColor: 'rgba(255, 255, 255, 0.0)',
+        lineColor: 'rgba(163, 163, 163, 0.8)',
+        lineWidth: 3
+    });
+
+
+    series.setData(data);
+
+    var toolTip = document.createElement('div');
+    toolTip.className = 'three-line-legend';
+    container.appendChild(toolTip);
+    toolTip.style.display = 'block';
+    toolTip.style.left = 3 + 'px';
+    toolTip.style.top = 3 + 'px';
+
+    function setLastBarText() {
+        var dateStr = data[data.length - 1].time.year + ' - ' + data[data.length - 1].time.month + ' - ' + data[data.length - 1].time.day;
+        toolTip.innerHTML = '<div style="font-size: 22px; margin: 4px 0px; color: #999999">' + data[data.length - 1].value + '</div>' +
+            '<div>' + dateStr + '</div>';
+    }
+
+    setLastBarText();
+
+    chart.subscribeCrosshairMove(function (param) {
+        if (param === undefined || param.time === undefined || param.point.x < 0 || param.point.x > width || param.point.y < 0 || param.point.y > height) {
+            setLastBarText();
+        } else {
+            dateStr = param.time.year + ' - ' + param.time.month + ' - ' + param.time.day;
+            var price = param.seriesPrices.get(series);
+            toolTip.innerHTML = '<div style="font-size: 22px; margin: 4px 0px; color: #999999">' + (Math.round(price * 100) / 100).toFixed(2) + '</div>' + '<div>' + dateStr + '</div>';
+        }
+    });
+</script>
 </body>
 </html>
