@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="base.css">
+    <link href="https://fonts.googleapis.com/css?family=Exo+2&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
     <title>Chart</title>
 </head>
@@ -69,11 +70,12 @@
     });
 
     var series = chart.addAreaSeries({
-        topColor: 'rgba(20, 20, 20, 0.1)',
-        bottomColor: 'rgba(80, 80, 80, 1)',
-        lineColor: 'rgba(200, 200, 200, 1)',
-        lineWidth: 2
+        topColor: 'rgba(0, 0, 0, 0.14)',
+        bottomColor: 'rgba(255, 255, 255, 0.12)',
+        lineColor: 'rgba(255, 255, 255, 1.0)',
+        lineWidth: 1
     });
+
 
     series.setData(data);
 
@@ -85,27 +87,22 @@
     toolTip.style.top = 3 + 'px';
 
     function setLastBarText() {
-        var dateStr = data[data.length - 1].time.year + ' - ' + data[data.length - 1].time.month + ' - ' + data[data.length - 1].time.day;
-        toolTip.innerHTML =
-            '<div style="font-size: 22px; margin: 4px 0px; color: #999999; width: 350px">Revolution W [SparkAssets A.S]</div>' +
-            '<div style="font-size: 22px; margin: 4px 0px; color: #999999; width: 350px">' + data[data.length - 1].value + '</div>' +
-            '<div style="font-size: 18px; margin: 4px 0px; color: #999999; width: 350px">' + dateStr + '</div>';
+	var dateStr = data[data.length - 1].time.year + ' - ' + data[data.length - 1].time.month + ' - ' + 	data[data.length - 1].time.day;
+	 toolTip.innerHTML =	'<div style="font-size: 24px; margin: 4px 0px; color: #999999">Revolution W [SparkAssets A.S]</div>'+ '<div style="font-size: 22px; margin: 4px 0px; color: #999999">' + data[data.length-1].value + '</div>' +
+		'<div style="font-size: 22px; margin: 4px 0px; color: #999999">' + dateStr + '</div>';
     }
 
     setLastBarText();
 
-    chart.subscribeCrosshairMove(function (param) {
-        if (param === undefined || param.time === undefined || param.point.x < 0 || param.point.x > width || param.point.y < 0 || param.point.y > height) {
-            setLastBarText();
-        } else {
-            dateStr = param.time.year + ' - ' + param.time.month + ' - ' + param.time.day;
-            var price = param.seriesPrices.get(series);
-            toolTip.innerHTML =
-                '<div style="font-size: 22px; margin: 4px 0px; color: #999999; width: 350px">Revolution W [SparkAssets A.S]</div>' +
-                '<div style="font-size: 22px; margin: 4px 0px; color: #999999; width: 350px">' + (Math.round(price * 100) / 100).toFixed(2) + '</div>' +
-                '<div style="font-size: 18px; margin: 4px 0px; color: #999999; width: 350px">' + dateStr + '</div>';
-        }
-    })
+    chart.subscribeCrosshairMove(function(param) {
+  if ( param === undefined || param.time === undefined || param.point.x < 0 || param.point.x > width || param.point.y < 0 || param.point.y > height ) {
+	setLastBarText();
+} else {
+	dateStr = param.time.year +' - '+ param.time.month + ' - ' + param.time.day;
+	var price = param.seriesPrices.get(series);
+	toolTip.innerHTML =	'<div style="font-size: 24px; margin: 4px 0px; color: #999999">Revolution W [SparkAssets A.S]</div>'+ '<div style="font-size: 22px; margin: 4px 0px; color: #999999">' + (Math.round(price * 100) / 100).toFixed(2) + '</div>' + '<div style="font-size: 22px; margin: 4px 0px; color: #999999">' + dateStr + '</div>';
+}
+    });
 </script>
 </body>
 </html>
